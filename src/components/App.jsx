@@ -1,54 +1,55 @@
 import React from 'react';
 
+import Form from './Form';
+import Todo from './Todo';
+
+let currentId = 0;
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      todos: [],
+    };
+  }
+
   render() {
     return (
       <div>
-        <form>
-          <input type='text' />
-          <button>Add</button>
-        </form>
+        <Form onSubmit={this.handleSubmit} />
 
         <label>
-          <input type='checkbox' />
+          <input type="checkbox" />
           All Completed!
         </label>
 
-        <slect>
-          <opiton>All</opiton>
-          <opiton>Uncompleted</opiton>
-          <opiton>Completed</opiton>
-        </slect>
+        <select>
+          <option>All</option>
+          <option>Uncompleted</option>
+          <option>Completed</option>
+        </select>
 
         <ul>
-          <li>
-            <label>
-              <input type='checkbox' />
-              Workout
-            </label>
-            <button>Edit</button>
-            <button>Delete</button>
-          </li>
-          <li>
-            <label>
-              <input type='checkbox' />
-              foobar
-            </label>
-            <button>Edit</button>
-            <button>Delete</button>
-          </li>
-          <li>
-            <label>
-              <input type='checkbox' />
-              hoge
-            </label>
-            <button>Edit</button>
-            <button>Delete</button>
-          </li>
+          {this.state.todos.map(({ id, text }) => (
+            <li key={id}>
+              <Todo text={text} />
+            </li>
+          ))}
         </ul>
+        <button>Delete All Completed</button>
       </div>
     );
   }
+
+  handleSubmit = (text) => {
+    const newTodo = {
+      id: currentId,
+      text,
+    };
+    const newTodos = [...this.state.todos, newTodo];
+    this.setState({ todos: newTodos });
+    currentId++;
+  };
 }
 
 export default App;
