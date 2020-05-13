@@ -36,6 +36,7 @@ class App extends React.Component {
     });
     return (
       <div>
+        <h1>TODO LIST</h1>
         <Form onSubmit={this.handleSubmit} />
 
         <CheckAll
