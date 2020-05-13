@@ -2,6 +2,7 @@ import React from 'react';
 
 import Form from './Form';
 import Todo from './Todo';
+import CheckAll from './CheckAll';
 
 let currentId = 0;
 class App extends React.Component {
@@ -14,14 +15,17 @@ class App extends React.Component {
   }
 
   render() {
+    const { todos } = this.state;
     return (
       <div>
         <Form onSubmit={this.handleSubmit} />
 
-        <label>
-          <input type="checkbox" />
-          All Completed!
-        </label>
+        <CheckAll
+          allCompleted={
+            todos.length > 0 && todos.every(({ completed }) => completed)
+          }
+          onChange={this.handleChangeAllCompleted}
+        />
 
         <select>
           <option>All</option>
@@ -30,9 +34,14 @@ class App extends React.Component {
         </select>
 
         <ul>
-          {this.state.todos.map(({ id, text }) => (
+          {todos.map(({ id, text, completed }) => (
             <li key={id}>
-              <Todo text={text} />
+              <Todo
+                id={id}
+                text={text}
+                completed={completed}
+                onChange={this.handleChangeCompleted}
+              />
             </li>
           ))}
         </ul>
@@ -45,10 +54,35 @@ class App extends React.Component {
     const newTodo = {
       id: currentId,
       text,
+      completed: false,
     };
     const newTodos = [...this.state.todos, newTodo];
     this.setState({ todos: newTodos });
     currentId++;
+  };
+
+  handleChangeAllCompleted = (completed) => {
+    const newTodos = this.state.todos.map((todo) => ({
+      ...todo,
+      completed,
+    }));
+
+    this.setState({ todos: newTodos });
+  };
+
+  handleChangeCompleted = (id, completed) => {
+    const newTodos = this.state.todos.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          completed,
+        };
+      }
+
+      return todo;
+    });
+
+    this.setState({ todos: newTodos });
   };
 }
 
